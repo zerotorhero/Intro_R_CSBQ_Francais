@@ -60,13 +60,18 @@ summary(iris_data)
 plot(iris_data)
 # comme «summary», la fonction plot est doté de méthodes par défaut pour de nombreux types d'objets génériques R
   
+# g. manipuler les données
+iris_data$mean.sepal.length[iris_data$Species=="setosa"]<-with(iris_data,
+                                                               mean(Sepal.Length))
+iris_data$Species[iris_data$Species=="setosa"]<-"Setosa"
+
 # 4. Données brisées
 # Essayer d'importer les données mal en point ("iris_broken")
 
-iris_brisées<-read.csv("iris_broken.csv")
+iris_brisées<-read.csv("./Data/iris_broken.csv")
 # Erreur 1: mauvaise extension (.txt et non .csv)
 
-iris_brisées<-read.csv("iris_broken.txt")
+iris_brisées<-read.csv("./Data/iris_broken.txt")
   
 # Regardez les données, head() et str() 
 # ces fonctions sont particulièrement utiles à l'étape d'importation de données
@@ -77,7 +82,7 @@ str(iris_brisées)
 # c.-à- le caractère séparation n'a pas été reconnu
   
 # Essayez l'importation de nouveau avec un séparateur différent
-iris_brisées<-read.csv("iris_broken.txt", sep = "")
+iris_brisées<-read.csv("./Data/iris_broken.txt", sep = "")
 
 # Utiliser l'argument sep pour indiquer quel caractère sépare les valeurs 
 # de chaque ligne du fichier (ici; TAB a été utilisé)
@@ -85,7 +90,7 @@ head(iris_brisées)
 str(iris_brisées)
   
 # Erreur 3: Les 4 premières lignes sont inutiles
-iris_brisées<-read.csv("iris_broken.txt", sep = "", skip = 4)
+iris_brisées<-read.csv("./Data/iris_broken.txt", sep = "", skip = 4)
 
 # Ajouter l'argument "skip" pour sauter quelques lignes
 head(iris_brisées)
@@ -95,7 +100,7 @@ str(iris_brisées)
 # en minuscule «na» et «Forgot_this_value»
 # Rappel: R ne reconnaît que «NA»
 iris_brisées$Petal.Length
-iris_brisées<-read.csv("iris_broken.txt", sep = "", skip = 4, na.strings = c("NA","na","Forgot_this_value"))
+iris_brisées<-read.csv("./Data/iris_broken.txt", sep = "", skip = 4, na.strings = c("NA","na","Forgot_this_value"))
                       
 head(iris_brisées)
 str(iris_brisées)
@@ -106,18 +111,24 @@ class(iris_brisées$Sepal.Width)   # facteur  ;(
 class(iris_brisées$Petal.Length)  # facteur  ;(
 class(iris_brisées$Petal.Width)   # numéric   :)!
 
-# remarquerez par exemple:
+# Indice:
 iris_brisées$Sepal.Width[23]  # pour la rangée 23, la valeur n'a pas été bien entré
 
-iris_brisées<-read.csv("iris_broken.txt",
+iris_brisées<-read.csv("./Data/iris_broken.txt",
                       sep="",
                       skip=4,
-                      na.strings=c("NA", "na","forgot_this_value"),
+                      na.strings=c("NA", "na","Forgot_this_value"),
                       as.is=c("Sepal.Width", "Petal.Length"))
   
-# Indique à R de laisser les deux colonnes seules
+# La commande "as.is()" indique à R de laisser les deux colonnes telles quelles
 head(iris_brisées)
 str(iris_brisées)
+
+# ou, remplacer avec la valeur désiré:
+# iris_brisées$Sepal.Width[23]  <- 3.6
+# iris_brisées$Sepal.Width[23]
+# iris_brisées$Sepal.Width <- as.numeric(iris_brisées$Sepal.Width)
+
 
 # Ce n'est toujours pas parfait, maintenant R pense que ces variables ne sont que des 
 # caractères, et non des valeurs numériques
@@ -126,8 +137,9 @@ iris_brisées$Sepal.Width <- as.numeric(iris_brisées$Sepal.Width)
 iris_brisées$Petal.Length <- as.numeric(iris_brisées$Petal.Length)
 # Notez le message d'avertissement car un NA a été introduit là où il y avait des valeurs non-numériques
 # c.-à-, la 23e entrée de Sepal.Width a été changé en «NA»
-iris_brisées$Sepal.Width[23]                    
-  
+iris_brisées$Sepal.Width[23] 
+
+
 # Les données brisées sont maintenant corrigés et importer dans R!! :)
 head(iris_brisées)
 str(iris_brisées)
@@ -147,8 +159,7 @@ head(iris_brisées)   # Tout est beau!
 
 # 7. Réparer les données brisées du CO2_broken!
 rm(list=ls())
-setwd("~/Desktop/PhD/FALL 2011/Stats workshop - Day 2/Data_Intro Day 2")  
-CO2_data<-read.csv("CO2_broken.csv") 
+CO2_data<-read.csv("./Data/CO2_broken.csv") 
 
 # look at the data
 head(CO2_data)
@@ -156,7 +167,7 @@ str(CO2_data)
 
 # Erreur 1: les deux premières lignes ne sont que des notes
 #sur des valeurs manquantes dans le sous-ensemble du Québec
-CO2_data<-read.csv("CO2_broken.csv", skip = 2)
+CO2_data<-read.csv("./Data/CO2_broken.csv", skip = 2)
 head(CO2_data)
 str(CO2_data)
 
@@ -164,7 +175,7 @@ str(CO2_data)
 CO2_sub_QC<-subset(CO2_data, CO2_data$Type == "Quebec", select=c(conc, uptake))
 
 # remplacer le "cannot_read_notes" avec NAs
-CO2_data<-read.csv("CO2_broken.csv", skip = 2, na.string = c("cannot_read_notes"))
+CO2_data<-read.csv("./Data/CO2_broken.csv", skip = 2, na.string = c("cannot_read_notes"))
 head(CO2_data)
 str(CO2_data)
                                                             
